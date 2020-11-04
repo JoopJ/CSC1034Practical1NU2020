@@ -1,4 +1,5 @@
 from math import pi, sin, cos
+
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from direct.actor.Actor import Actor
@@ -18,7 +19,7 @@ class WalkingPanda(ShowBase):
         # Check wether to rotate the camera or to keep it still
         if (no_rotate or flip_camera != 0):
             # Add the setCameraPosition procedure to the task manager.
-            self.taskMgr.add(self.setCameraPosition, "SetCameraPositionTask", extraArgs=[flip_camera], appendTask=True)
+            self.taskMgr.add(self.setCameraPositionTask, "SetCameraPositionTask", extraArgs=[flip_camera], appendTask=True)
         else:
             # Add the spinCameraTask procedure to the task manager.
             self.taskMgr.add(self.spinCameraTask, "SpinCameraTask", extraArgs=[cam_speed,cam_spin_direction], appendTask=True)
@@ -30,6 +31,13 @@ class WalkingPanda(ShowBase):
         # Loop its animation.
         self.pandaActor.loop("walk")
 
+        # Load and play sfx
+        footstepsSound = self.loader.loadSfx("sounds/footsteps.mp3")
+        roarSound = self.loader.loadSfx("sounds/roar.mp3")
+        footstepsSound.setLoop(True)
+        footstepsSound.play()
+        roarSound.play()
+
     # Define a procedure to move the camera.
     def spinCameraTask(self, cam_speed, cam_spin_direction, task):
         angleDegrees = task.time * cam_speed * cam_spin_direction
@@ -37,8 +45,9 @@ class WalkingPanda(ShowBase):
         self.camera.setPos(20 * sin(angleRadians), -20.0 * cos(angleRadians), 3)
         self.camera.setHpr(angleDegrees, 0, 0)
         return Task.cont
+
     # Define a procedure to position the camera infront of the panda
-    def setCameraPosition(self, flip_camera, task):
+    def setCameraPositionTask(self, flip_camera, task):
         self.camera.setPos(0,-20,3)
         self.camera.setHpr(0,0,flip_camera)
         return Task.cont
