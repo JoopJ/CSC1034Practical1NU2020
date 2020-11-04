@@ -40,7 +40,7 @@ class WalkingPanda(ShowBase):
 
     # Define a procedure to move the camera.
     def spinCameraTask(self, cam_speed, cam_spin_direction, task):
-        angleDegrees = task.time * cam_speed * cam_spin_direction
+        angleDegrees = task.time * float(cam_speed) * float(cam_spin_direction)
         angleRadians = angleDegrees * (pi / 180.0)
         self.camera.setPos(20 * sin(angleRadians), -20.0 * cos(angleRadians), 3)
         self.camera.setHpr(angleDegrees, 0, 0)
